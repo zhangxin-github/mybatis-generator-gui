@@ -56,11 +56,11 @@ public class MybatisGeneratorBridge {
         Configuration configuration = new Configuration();
         Context context = new Context(ModelType.CONDITIONAL);
         configuration.addContext(context);
-	    
+
 		context.addProperty("autoDelimitKeywords", "true");
         context.addProperty("beginningDelimiter", "`");
         context.addProperty("endingDelimiter", "`");
-	    
+
         context.addProperty("javaFileEncoding", "UTF-8");
 		String dbType = selectedDatabaseConfig.getDbType();
 		String connectorLibPath = ConfigHelper.findConnectorLibPath(dbType);
@@ -241,6 +241,22 @@ public class MybatisGeneratorBridge {
                 pluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.CommonDAOInterfacePlugin");
                 context.addPluginConfiguration(pluginConfiguration);
             }
+        }
+
+        // 添加批量插件
+        if (DbType.MySQL.name().equals(dbType) || DbType.MySQL_8.name().equals(dbType)
+                || DbType.Oracle.name().equals(dbType)) {
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.BatchInsertPlugin");
+            pluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.BatchInsertPlugin");
+            context.addPluginConfiguration(pluginConfiguration);
+        }
+        if (DbType.MySQL.name().equals(dbType) || DbType.MySQL_8.name().equals(dbType)
+                || DbType.Oracle.name().equals(dbType)) {
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.BatchUpdatePlugin");
+            pluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.BatchUpdatePlugin");
+            context.addPluginConfiguration(pluginConfiguration);
         }
 
         context.setTargetRuntime("MyBatis3");
